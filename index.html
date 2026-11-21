@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test</title>
+<style>:root{--bg:#0b0b10;--fg:#f2f2f7;--card:#15151f;--line:#2a2a3a;--acc:#0000ff;--accfg:#ffffff;--font:-apple-system,"Segoe UI",Roboto,sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--font);min-height:100vh;display:flex;justify-content:center}
+.wrap{width:100%;max-width:520px;padding:28px 16px 40px;text-align:center}.logo{width:84px;height:84px;border-radius:50%;background:var(--acc);color:var(--accfg);display:grid;place-items:center;font-size:34px;font-weight:800;margin:0 auto 12px}
+h1{margin:0 0 6px;font-size:26px}.bio{opacity:.85;margin:0 0 18px}a.b{display:block;background:var(--card);border:1px solid var(--line);color:var(--fg);text-decoration:none;border-radius:12px;padding:14px;margin:10px 0;font-weight:700}
+a.b.p{background:var(--acc);color:var(--accfg);border-color:var(--acc)}.info{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:16px;font-size:14px;text-align:left;white-space:pre-line}footer{margin-top:24px;font-size:12px;opacity:.6}</style></head><body>
+<div class="wrap"><div class="logo" id="lg"></div><h1 id="h"></h1><p class="bio" id="bio"></p><div id="links"></div><div class="info" id="info" hidden></div><footer id="ft"></footer></div>
+<script>
+const CFG={"title":"Test","sub":"","footer":"","bio":"Testttt","phone":"55555555","email":"Patrizzi2792@gmail.com","info":"","links":[{"label":"Google","url":"https://google.com"}]};
+const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('#h').textContent=CFG.title;$('#bio').textContent=CFG.bio||'';$('#lg').textContent=(CFG.title||'?').trim().charAt(0).toUpperCase();$('#ft').textContent=CFG.footer||'';document.title=CFG.title;
+const L=[];if(CFG.phone)L.push({label:'Call '+CFG.phone,url:'tel:'+CFG.phone.replace(/[^\d+]/g,''),p:1});if(CFG.email)L.push({label:'Email',url:'mailto:'+CFG.email});
+(CFG.links||[]).forEach(l=>L.push(l));if(CFG.phone||CFG.email)L.push({label:'Save contact',url:'#vcf'});
+$('#links').innerHTML=L.map(l=>'<a class="b'+(l.p?' p':'')+'" href="'+esc(l.url)+'"'+(/^https?:/.test(l.url)?' target="_blank" rel="noopener"':'')+'>'+esc(l.label)+'</a>').join('');
+if(CFG.info){$('#info').hidden=false;$('#info').textContent=CFG.info}
+$('#links').onclick=e=>{const a=e.target.closest('a[href="#vcf"]');if(!a)return;e.preventDefault();const v=['BEGIN:VCARD','VERSION:3.0','FN:'+CFG.title,CFG.phone?'TEL:'+CFG.phone:'',CFG.email?'EMAIL:'+CFG.email:'','URL:'+location.href,'END:VCARD'].filter(Boolean).join('\n');const b=document.createElement('a');b.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'}));b.download=(CFG.title||'contact')+'.vcf';document.body.appendChild(b);b.click();b.remove()};
+</script></body></html>
